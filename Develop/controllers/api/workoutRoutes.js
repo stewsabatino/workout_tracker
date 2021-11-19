@@ -3,10 +3,10 @@ const db = require('../../models')
 
 router.get('/', (req, res) => {
     db.Workout.find({})
-        .then(dbWorkouts => {
+        .then((dbWorkouts) => {
             res.status(200).json(dbWorkouts)
         })
-        .catch(err => {
+        .catch((err) => {
             res.status(500).json(err)
         });
 });
@@ -14,28 +14,46 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
     db.Workout.create({})
-        .then(dbWorkout => {
+        .then((dbWorkout) => {
             res.status(200).json(dbWorkout);
         })
-        .catch(err => {
+        .catch((err) => {
             res.status(500).json(err)
         });
 });
 
 router.put('/:id', (req, res) => {
-    db.Workout.update({ 
-        _id: mongojs.ObjectId(req.params.id)
+    db.Workout.updateOne({
+        _id: req.params.id
     },
     { 
-        $set: {req.body}
-    })
+        $push: { exercises: { ...req.body}  }
+    },)
         .then(dbWorkout => {
             res.status(200).json(dbWorkout);
         })
-        .catch(err => {
+        .catch((err) => {
             res.status(500).json(err)
         });
 });
 
+
+router.get('/range', (req, res) => {
+    db.Workout.aggregate([
+        {
+            $addFields: {
+                totalDuration: 
+                    { $sum: '$exercise.duration'},
+            }
+        }
+    ])
+    .limit(10)
+    .then((workout) => {
+        res.status(200).json(workout)
+    })
+    .catch((err) => {
+        res.status(500).json(err)
+    })
+})
 
 module.exports = router

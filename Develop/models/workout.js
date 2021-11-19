@@ -17,11 +17,21 @@ const WorkoutSchema = new Schema({
                 type: String,
                 required: "You need to add in a name"
             },
-            duration: Number,
-            weight: Number,
-            reps: Number,
-            sets: Number,
-            distance: Number,
+            duration: {
+                type: Number
+            },
+            weight: {
+                type: Number
+            },
+            reps: {
+                type: Number
+            },
+            sets: {
+                type: Number
+            },
+            distance: {
+                type: Number
+            }
         }
     ]
 },
@@ -34,7 +44,7 @@ const WorkoutSchema = new Schema({
 
 WorkoutSchema.virtual("totalDuration").get(function () {
     const duration = this.exercises.reduce((acc, cur) => {
-        return acc + curr.duration;
+        return acc + cur.duration;
     }, 0);
 
     return duration;
