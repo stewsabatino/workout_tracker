@@ -39,14 +39,7 @@ router.put('/:id', (req, res) => {
 
 
 router.get('/range', (req, res) => {
-    db.Workout.aggregate([
-        {
-            $addFields: {
-                totalDuration: 
-                    { $sum: '$exercise.duration'},
-            }
-        }
-    ])
+    db.Workout.find({})
     .limit(10)
     .then((workout) => {
         res.status(200).json(workout)
